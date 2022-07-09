@@ -4,13 +4,24 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sync"
+	"runtime"
 	"time"
 )
 
-var wg sync.WaitGroup
+func task30() {
+	var cpu_count int
+	var max_cpu_count int = runtime.NumCPU()
 
-func task20() {
+	fmt.Println("Введите количество процессоров\n")
+	fmt.Fscan(os.Stdin, &cpu_count)
+
+	if cpu_count > max_cpu_count {
+		cpu_count = max_cpu_count
+	}
+
+	fmt.Printf("Задачи будут выполняться на %d процессорах \n", cpu_count)
+
+	runtime.GOMAXPROCS(cpu_count)
 
 	file, err := os.Open("input.txt")
 
@@ -26,15 +37,24 @@ func task20() {
 	var taskNumber int = 0
 
 	for scanner.Scan() {
+
+		var activeTasksCount int = runtime.NumGoroutine()
+
 		if len(scanner.Text()) > 0 {
 
-			taskNumber += 1
+			if activeTasksCount < cpu_count+1 {
+				taskNumber += 1
 
-			wg.Add(1)
+				wg.Add(1)
 
-			var taskDuration = scanner.Text()
+				var taskDuration = scanner.Text()
 
-			go paralelTask(taskNumber, taskDuration)
+				go limitTask(taskNumber, taskDuration)
+
+			} else {
+
+				wg.Wait()
+			}
 
 		}
 
@@ -46,8 +66,7 @@ func task20() {
 
 }
 
-func paralelTask(taskNumber int, taskDuration string) {
-
+func limitTask(taskNumber int, taskDuration string) {
 	defer wg.Done()
 
 	taskDurationParsed, _ := time.ParseDuration(taskDuration)
