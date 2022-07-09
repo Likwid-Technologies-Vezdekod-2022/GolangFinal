@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func main() {
+func task10() {
 	file, err := os.Open("input.txt")
 
 	if err != nil {
@@ -23,7 +23,6 @@ func main() {
 
 	for scanner.Scan() {
 		if len(scanner.Text()) > 0 {
-			fmt.Printf("---------------------------------------- \n")
 
 			taskNumber += 1
 
@@ -31,11 +30,10 @@ func main() {
 
 			var taskDuration = scanner.Text()
 
-			task(taskDuration)
+			runTask(taskDuration)
 
 			fmt.Printf("Закончено  выполнение задачи по номером --> %d \n", taskNumber)
 
-			fmt.Printf("---------------------------------------- \n")
 		}
 
 	}
@@ -44,7 +42,7 @@ func main() {
 
 }
 
-func task(taskDuration string) {
+func runTask(taskDuration string) {
 
 	taskLengthParsed, _ := time.ParseDuration(taskDuration)
 
