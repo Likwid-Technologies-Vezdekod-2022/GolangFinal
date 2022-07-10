@@ -1,4 +1,4 @@
-module awesomeProject
+module GolangFinal
 
 go 1.19
 
